@@ -1,13 +1,14 @@
-import { styled, alpha } from '@mui/material/styles';
+import SearchIcon from '@mui/icons-material/Search';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
-import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
 import InputBase from '@mui/material/InputBase';
-import MenuIcon from '@mui/icons-material/Menu';
-import SearchIcon from '@mui/icons-material/Search';
+import { alpha, styled } from '@mui/material/styles';
+import Toolbar from '@mui/material/Toolbar';
+import Typography from '@mui/material/Typography';
 import SelectorComponent from './SelectorComponent';
+import { useDispatch, useSelector } from 'react-redux';
+import { setSearchValue } from '../slice/movieSlice';
+import { useEffect } from 'react';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -51,28 +52,45 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
+
+
+
 export default function SearchAppBar() {
+
+  const dispatch = useDispatch<any>();
+
+  const { searchValue } = useSelector((state: any) => state.movies);
+  console.log("s=", searchValue);
+
+  const handleSearchChange = (e: any) => {
+    const value = e.target.value;
+    // console.log(value);
+    //set search value in store
+    dispatch(setSearchValue(value));
+  }
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
         <Toolbar>
-        
+
           <Typography
             variant="h6"
             noWrap
             component="div"
             sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }}
           >
-          CineFlix
+            CineFlix
           </Typography>
           <SelectorComponent type='genre' />
-          <SelectorComponent type="category"/>
+          <SelectorComponent type="category" />
           <Search>
             <SearchIconWrapper>
               <SearchIcon />
             </SearchIconWrapper>
             <StyledInputBase
               placeholder="Search…"
+              onChange={(e) => { handleSearchChange(e); }}
               inputProps={{ 'aria-label': 'search' }}
             />
           </Search>
