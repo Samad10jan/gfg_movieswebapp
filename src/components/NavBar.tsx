@@ -5,10 +5,13 @@ import InputBase from '@mui/material/InputBase';
 import { alpha, styled } from '@mui/material/styles';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
+import { useDispatch } from 'react-redux';
+import { getMovies, searchMovies } from '../api/movies';
 import SelectorComponent from './SelectorComponent';
-import { useDispatch, useSelector } from 'react-redux';
-import { setSearchValue } from '../slice/movieSlice';
-import { useEffect } from 'react';
+
+import { useEffect, useState } from 'react';
+
+import { debounce } from "lodash";
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -40,7 +43,6 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   width: '100%',
   '& .MuiInputBase-input': {
     padding: theme.spacing(1, 1, 1, 0),
-    // vertical padding + font size from searchIcon
     paddingLeft: `calc(1em + ${theme.spacing(4)})`,
     transition: theme.transitions.create('width'),
     [theme.breakpoints.up('sm')]: {
@@ -52,22 +54,56 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-
-
-
 export default function SearchAppBar() {
 
   const dispatch = useDispatch<any>();
 
-  const { searchValue } = useSelector((state: any) => state.movies);
-  console.log("s=", searchValue);
 
-  const handleSearchChange = (e: any) => {
+  // Debouncing
+
+  //local state for search input
+
+  // const [search, setSearch] = useState("");
+
+  // useEffect(() => {
+
+  //   const timeout = setTimeout(() => {
+
+  //     if (search.trim() !== "") {
+  //       dispatch(searchMovies(search) as any);
+  //     } else {
+  //       dispatch(getMovies() as any);
+  //     }
+
+  //   }, 800); // wait 500ms
+
+  //   // cleanup previous timeout
+  //   return () => clearTimeout(timeout);
+
+  // }, [search]);
+
+  // const handleSearchChange = (e: any) => {
+  // //   setSearch(e.target.value);
+  // // };
+
+
+
+
+  // Debouncing with lodash
+
+  const handleSearchChange = debounce((e: any) => {
     const value = e.target.value;
-    // console.log(value);
-    //set search value in store
-    dispatch(setSearchValue(value));
-  }
+    if (value.trim() === "") {
+      dispatch(getMovies() as any);
+      return;
+    }
+    dispatch(searchMovies(value) as any);
+  }, 500)
+
+
+  // 
+
+
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -82,18 +118,23 @@ export default function SearchAppBar() {
           >
             CineFlix
           </Typography>
+
           <SelectorComponent type='genre' />
           <SelectorComponent type="category" />
+
           <Search>
             <SearchIconWrapper>
               <SearchIcon />
             </SearchIconWrapper>
+
             <StyledInputBase
               placeholder="Search…"
-              onChange={(e) => { handleSearchChange(e); }}
+              onChange={handleSearchChange}
               inputProps={{ 'aria-label': 'search' }}
             />
+
           </Search>
+
         </Toolbar>
       </AppBar>
     </Box>

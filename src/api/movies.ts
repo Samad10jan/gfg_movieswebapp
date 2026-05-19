@@ -1,5 +1,5 @@
 import axios, { AxiosError } from "axios";
-import { setMovies, setError, setLoading } from "../slice/movieSlice";
+import { setMovies, setError, setLoading, setPaginationValues } from "../slice/movieSlice";
 import type { MoviesResponseType } from "../lib/types";
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || "https://api.imdbapi.dev";
@@ -15,7 +15,19 @@ export const getMovies = (pageToken?: string) => async (dispatch: any) => {
         const response = await api.get<MoviesResponseType>(
             `/titles?pageToken=${pageToken || ""}`
         );
-        dispatch(setMovies(response.data.titles));
+        console.log(response.data);
+
+        dispatch(setPaginationValues({
+            nextPageToken: response.data.nextPageToken,
+            totalCount: response.data.totalCount,
+        }));
+
+        // if (pageToken) {
+        //     // Append new movies to existing list
+        //     dispatch(setMovies((prevMovies: any) => [...prevMovies, ...response.data.titles]));
+        // } else {
+            dispatch(setMovies(response.data.titles));
+        // }
         dispatch(setError(null));
     } catch (error) {
         const errorMessage = error instanceof AxiosError

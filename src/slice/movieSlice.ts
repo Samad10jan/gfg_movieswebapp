@@ -1,16 +1,22 @@
-import { createSlice} from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 import type { MoviesCardType } from "../lib/types";
 
 interface MovieState {
     movies: MoviesCardType[];
-    searchValue: string;
+    paginationValues: {
+        nextPageToken: string | null,
+        totalCount: number | null,
+    },
     loading: boolean;
     error: string | null;
 }
 
 const initialState: MovieState = {
     movies: [],
-    searchValue: "",
+    paginationValues: {
+        nextPageToken: null,
+        totalCount: null,
+    },
     loading: false,
     error: null,
 };
@@ -22,8 +28,9 @@ const movieSlice = createSlice({
         setMovies: (state, action) => {
             state.movies = action.payload;
         },
-        setSearchValue: (state, action) => {
-            state.searchValue = action.payload;
+        setPaginationValues: (state, action) => {
+            state.paginationValues.nextPageToken = action.payload.nextPageToken;
+            state.paginationValues.totalCount = action.payload.totalCount;
         },
         setLoading: (state, action) => {
             state.loading = action.payload;
@@ -34,5 +41,5 @@ const movieSlice = createSlice({
     },
 });
 
-export const { setMovies, setSearchValue, setLoading, setError } = movieSlice.actions;
+export const { setMovies, setPaginationValues,setLoading, setError } = movieSlice.actions;
 export default movieSlice.reducer;

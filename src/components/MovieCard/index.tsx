@@ -7,7 +7,7 @@ type Props = {
 export default function MovieCard({ data }: Props) {
 
     return (
-        <div className="group relative w-full aspect-2/3 rounded-2xl overflow-hidden cursor-pointer bg-black shadow-md  hover:shadow-2xl transition-all duration-300">
+        <div className="group relative w-full aspect-2/3 rounded-2xl overflow-hidden cursor-pointer bg-black shadow-md  hover:shadow-2xl transition-all ">
 
             {/* Poster */}
             {data.primaryImage?.url && (
@@ -19,7 +19,7 @@ export default function MovieCard({ data }: Props) {
             )}
 
 
-            <div className="absolute inset-0 bg-linear-to-t  group-hover:from-black/95 group-hover:via-black/40 transition-all duration-300" />
+            <div className="absolute inset-0 bg-linear-to-t  group-hover:from-black/95 group-hover:via-black/40 transition-all " />
 
             {/* Rating badge */}
             {data.rating?.aggregateRating && (
@@ -36,7 +36,7 @@ export default function MovieCard({ data }: Props) {
             </div>
 
             {/* Content — slides up on hover */}
-            <div className="absolute bottom-0 left-0 right-0 px-3 pb-3 pt-2 translate-y-1 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 text-white">
+            <div className="absolute bottom-0 left-0 right-0 px-3 pb-3 pt-2 translate-y-1 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all text-white">
 
                 {/* Title */}
                 <h3 className="font-serif font-bold text-sm sm:text-[0.95rem] leading-snug line-clamp-2 mb-1">

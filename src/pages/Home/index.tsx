@@ -1,36 +1,40 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getMovies, searchMovies } from "../../api/movies";
+import { getMovies } from "../../api/movies";
 import MovieCard from "../../components/MovieCard";
-import type { MoviesCardType } from "../../lib/types";
 import { Spinner } from "../../components/Spinner";
+import type { MoviesCardType } from "../../lib/types";
 
 
 const Home = () => {
     const dispatch = useDispatch();
-    const { movies, searchValue, loading, error } = useSelector(
+    const { movies, paginationValues, loading, error } = useSelector(
         (state: any) => state.movies
     );
 
-    useEffect(() => {
-        if (searchValue === "") {
-            dispatch(getMovies() as any);
-            return;
-        }
-        // debounce search to avoid excessive API calls
-        let t= setTimeout(() => {
-        dispatch(searchMovies(searchValue) as any);}, 2000);
+    const { nextPageToken, totalCount } = paginationValues;
 
-        // cleanup timeout on unmount or search value change
-        return () => clearTimeout(t);
-    }, [searchValue, dispatch]);
+    const handleLoadMore = () => {
+        if (nextPageToken) {
+            dispatch(getMovies(nextPageToken) as any);
+        }
+        window.scrollTo({
+            top: 5,
+            behavior: "smooth",
+        });
+
+    }
+    useEffect(() => {
+        dispatch(getMovies() as any);
+    }, [dispatch])
+    console.log(movies);
 
     return (
         <div>
-     
-            
+
+
             {loading && (
-                <Spinner loading={loading}/>
+                <Spinner loading={loading} />
             )}
 
             {error && (
@@ -54,6 +58,17 @@ const Home = () => {
                             <p className="col-span-full text-center text-gray-500">No movies found</p>
                         )}
                     </div>
+                </div>
+            )}
+
+            {!loading && !error && nextPageToken && (
+                <div className="flex justify-center my-4">
+                    <button
+                        onClick={handleLoadMore}
+                        className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+                    >
+                        Load More
+                    </button>
                 </div>
             )}
         </div>
