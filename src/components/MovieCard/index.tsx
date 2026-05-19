@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import type { MoviesCardType } from "../../lib/types";
 import StarIcon from "@mui/icons-material/Star";
 type Props = {
@@ -7,7 +8,7 @@ type Props = {
 export default function MovieCard({ data }: Props) {
 
     return (
-        <div className="group relative w-full aspect-2/3 rounded-2xl overflow-hidden cursor-pointer bg-black shadow-md  hover:shadow-2xl transition-all ">
+        <Link to={`/movie/${data.id} `} className="group relative w-full aspect-2/3 rounded-2xl overflow-hidden cursor-pointer bg-black shadow-md  hover:shadow-2xl transition-all ">
 
             {/* Poster */}
             {data.primaryImage?.url && (
@@ -19,7 +20,7 @@ export default function MovieCard({ data }: Props) {
             )}
 
 
-            <div className="absolute inset-0 bg-linear-to-t  group-hover:from-black/95 group-hover:via-black/40 transition-all " />
+            <div className="absolute inset-0 bg-linear-to-t   group-hover:from-black/95 group-hover:via-black/40 transition-all " />
 
             {/* Rating badge */}
             {data.rating?.aggregateRating && (
@@ -70,6 +71,6 @@ export default function MovieCard({ data }: Props) {
 
 
             </div>
-        </div>
+        </Link>
     );
 }
