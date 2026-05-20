@@ -120,7 +120,7 @@ export default function SearchAppBar() {
           </Typography>
 
           <SelectorComponent type='genre' />
-          <SelectorComponent type="category" />
+          <SelectorComponent type="type" />
 
           <Search>
             <SearchIconWrapper>

@@ -38,8 +38,9 @@ const movieSlice = createSlice({
         setError: (state, action) => {
             state.error = action.payload;
         },
+        
     },
 });
 
-export const { setMovies, setPaginationValues,setLoading, setError } = movieSlice.actions;
+export const { setMovies, setPaginationValues, setLoading, setError} = movieSlice.actions;
 export default movieSlice.reducer;

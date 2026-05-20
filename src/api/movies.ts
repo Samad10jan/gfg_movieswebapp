@@ -27,7 +27,7 @@ export const getMovies = (pageToken?: string) => async (dispatch: any) => {
         //     // Append new movies to existing list
         //     dispatch(setMovies((prevMovies: any) => [...prevMovies, ...response.data.titles]));
         // } else {
-            dispatch(setMovies(response.data.titles));
+        dispatch(setMovies(response.data.titles));
         // }
         dispatch(setMoviesError(null));
     } catch (error) {
@@ -68,12 +68,12 @@ export const searchMovies = (query: string) => async (dispatch: any) => {
 export const getMovieDetails = (id: string) => async (dispatch: any) => {
     dispatch(setLoading(true));
     console.log("1");
-    
+
     try {
         console.log("aa");
-        
+
         const response = await api.get(`/titles/${id}`);
-console.log(response.data);
+        console.log(response.data);
 
         dispatch(setMovieDetails(response.data));
         dispatch(setError(null));
