@@ -100,3 +100,18 @@ export type TitleDetailsType = {
     name: string;
   }[];
 };
+
+export interface MovieState {
+    movies: MoviesCardType[];
+    paginationValues: {
+        nextPageToken: string | null,
+        totalCount: number | null,
+    };
+    loading: boolean;
+    error: string | null;
+    filters: {
+        type: string | null;
+        genre: string | null;
+        query: string;
+    };
+}

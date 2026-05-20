@@ -1,6 +1,13 @@
 import axios, { AxiosError } from "axios";
-import { setMovies, setError as setMoviesError, setLoading as setMoviesLoading, setPaginationValues } from "../slice/movieSlice";
-import type { MoviesResponseType } from "../lib/types";
+import {
+    setMovies,
+    appendMovies,
+    setError as setMoviesError,
+    setLoading as setMoviesLoading,
+    setPaginationValues,
+    setSearchQuery,
+} from "../slice/movieSlice";
+import type { MoviesResponseType } from "../utils/types";
 import { setMovieDetails, setLoading, setError } from "../slice/detailedMoviesSlice";
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || "https://api.imdbapi.dev";
@@ -13,22 +20,19 @@ const api = axios.create({
 export const getMovies = (pageToken?: string) => async (dispatch: any) => {
     dispatch(setMoviesLoading(true));
     try {
-        const response = await api.get<MoviesResponseType>(
-            `/titles?pageToken=${pageToken || ""}`
-        );
-        // console.log(response.data);
+        const endpoint = pageToken ? `/titles?pageToken=${pageToken}` : "/titles";
+        const response = await api.get<MoviesResponseType>(endpoint);
 
         dispatch(setPaginationValues({
             nextPageToken: response.data.nextPageToken,
             totalCount: response.data.totalCount,
         }));
 
-        // if (pageToken) {
-        //     // Append new movies to existing list
-        //     dispatch(setMovies((prevMovies: any) => [...prevMovies, ...response.data.titles]));
-        // } else {
-        dispatch(setMovies(response.data.titles));
-        // }
+        if (pageToken) {
+            dispatch(appendMovies(response.data.titles));
+        } else {
+            dispatch(setMovies(response.data.titles));
+        }
         dispatch(setMoviesError(null));
     } catch (error) {
         const errorMessage = error instanceof AxiosError
@@ -42,9 +46,9 @@ export const getMovies = (pageToken?: string) => async (dispatch: any) => {
 };
 
 export const searchMovies = (query: string) => async (dispatch: any) => {
+    dispatch(setSearchQuery(query));
     if (!query.trim()) {
-        dispatch(setMovies([]));
-        return;
+        return dispatch(getMovies() as any);
     }
 
     dispatch(setMoviesLoading(true));
@@ -53,6 +57,10 @@ export const searchMovies = (query: string) => async (dispatch: any) => {
             `/search/titles?query=${encodeURIComponent(query)}`
         );
         dispatch(setMovies(response.data.titles));
+        dispatch(setPaginationValues({
+            nextPageToken: response.data.nextPageToken,
+            totalCount: response.data.totalCount,
+        }));
         dispatch(setMoviesError(null));
     } catch (error) {
         const errorMessage = error instanceof AxiosError
@@ -67,14 +75,8 @@ export const searchMovies = (query: string) => async (dispatch: any) => {
 
 export const getMovieDetails = (id: string) => async (dispatch: any) => {
     dispatch(setLoading(true));
-    console.log("1");
-
     try {
-        console.log("aa");
-
         const response = await api.get(`/titles/${id}`);
-        console.log(response.data);
-
         dispatch(setMovieDetails(response.data));
         dispatch(setError(null));
     } catch (error) {
@@ -86,5 +88,14 @@ export const getMovieDetails = (id: string) => async (dispatch: any) => {
     } finally {
         dispatch(setLoading(false));
     }
+};
 
-}
+export const getMovieCredits = async (id: string) => {
+    try {
+        const response = await api.get(`/titles/${id}/credits`);
+        return response.data;
+    } catch (error) {
+        console.error("Error fetching movie credits:", error);
+        return null;
+    }
+};

@@ -1,44 +1,75 @@
 import { Avatar, IconButton, Menu, MenuItem, Tooltip } from '@mui/material';
 import * as React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { searchMovies } from '../../api/movies';
+import type { RootState, AppDispatch } from '../../store';
+import { setTypeFilter, setGenreFilter } from '../../slice/movieSlice';
+import TheaterComedyIcon from '@mui/icons-material/TheaterComedy';
+import CategoryIcon from '@mui/icons-material/Category';
 
-export default function SelectorComponent({ type }: { type?: string }) {
+export default function SelectorComponent({ type }: { type?: 'type' | 'genre' }) {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
-  const movieTypes = ["MOVIE", "TV_SERIES", "TV_MINI_SERIES", "TV_SPECIAL", "TV_MOVIE", "SHORT", "VIDEO", "VIDEO_GAME"]
-  const genres = ["Action", "Adventure", "Animation", "Biography", "Comedy", "Crime", "Documentary", "Drama", "Family", "Fantasy", "History", "Horror", "Mystery", "Romance", "Sci-Fi", "Sport", "Thriller", "Western"]
+  const movieTypes = [
+    'MOVIE',
+    'TV_SERIES',
+    'TV_MINI_SERIES',
+    'TV_SPECIAL',
+    'TV_MOVIE',
+    'SHORT',
+    'VIDEO',
+    'VIDEO_GAME',
+  ];
+  const genres = [
+    'Action',
+    'Adventure',
+    'Animation',
+    'Biography',
+    'Comedy',
+    'Crime',
+    'Documentary',
+    'Drama',
+    'Family',
+    'Fantasy',
+  
+  ];
+
+  const filters = useSelector((state: RootState) => state.movies.filters);
+  const dispatch = useDispatch<AppDispatch>();
+
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
+
   const handleClose = () => {
     setAnchorEl(null);
   };
 
-  const { movies, error, loaading } = useSelector((state: any) => state.movies)
-  const dispatch = useDispatch<any>();
-
-
-  console.log(movies);
-
-  const handleItemClick = (type: string) => {
-    dispatch(searchMovies(type) as any);
+  const handleItemClick = (value: string) => {
+    if (type === 'type') {
+      dispatch(setTypeFilter(value));
+    } else {
+      dispatch(setGenreFilter(value));
+    }
     handleClose();
+  };
 
-  }
+  const activeValue = type === 'type' ? filters.type : filters.genre;
+  const title = type === 'type' ? 'Filter by type' : 'Filter by genre';
+
   return (
     <React.Fragment>
-
-      <Tooltip title={type?.toUpperCase()}>
+      <Tooltip title={title}>
         <IconButton
           onClick={handleClick}
           size="small"
-          sx={{ ml: 2 }}
+          sx={{ ml: 2, bgcolor: activeValue ? 'primary.main' : 'transparent' }}
           aria-controls={open ? 'account-menu' : undefined}
           aria-haspopup="true"
           aria-expanded={open}
         >
-          <Avatar sx={{ width: 32, height: 32 }}>{type?.charAt(0).toUpperCase()}</Avatar>
+          <Avatar sx={{ width: 32, height: 32, bgcolor: activeValue ? 'primary.dark' : 'grey.700' }}>
+            {type === 'type' ? <CategoryIcon className=' text-yellow-300'/> : <TheaterComedyIcon className=' text-amber-300'/>}
+          </Avatar>
         </IconButton>
       </Tooltip>
 
@@ -79,15 +110,13 @@ export default function SelectorComponent({ type }: { type?: string }) {
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
-        {type === "type" && movieTypes.map((t) => (
-          <MenuItem key={t} onClick={() => handleItemClick(t.replaceAll("_", "").toLowerCase())}>
-            <Avatar /> {t.replaceAll("_", " ")}
-          </MenuItem>
-        ))}
-
-        {type === "genre" && genres.map((t) => (
-          <MenuItem key={t} onClick={()=> handleItemClick(t.toLowerCase())}>
-            <Avatar className=' ' /> {t}
+        {(type === 'type' ? movieTypes : genres).map((item) => (
+          <MenuItem
+            key={item}
+            selected={activeValue === item}
+            onClick={() => handleItemClick(item)}
+          >
+            <Avatar /> {item.replaceAll('_', ' ')}
           </MenuItem>
         ))}
       </Menu>
