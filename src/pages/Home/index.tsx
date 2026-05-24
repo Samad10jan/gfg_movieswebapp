@@ -35,11 +35,12 @@ const Home = () => {
         if (nextPageToken) {
             dispatch(getMovies(nextPageToken) as any);
         }
-        window.scrollTo({
-            top: 5,
-            behavior: "smooth",
-        });
+        // window.scrollTo({
+        //     top: 5,
+        //     behavior: "smooth",
+        // });
     };
+
 
     useEffect(() => {
         dispatch(getMovies() as any);
@@ -47,7 +48,7 @@ const Home = () => {
 
     return (
         <div className="min-h-screen bg-slate-950 text-slate-100">
-            {loading && <Spinner/>}
+            
 
             {error && (
                 <div className="p-4 text-center">
@@ -122,6 +123,7 @@ const Home = () => {
                     </div>
                 )}
             </div>
+            {loading && <Spinner/>}
         </div>
     );
 };
