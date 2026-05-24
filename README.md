@@ -17,6 +17,20 @@ The primary goal of this project was to gain hands-on experience with:
 
 ---
 
+## 📸 Screenshots
+
+### Home Page
+
+<img width="1919" height="898" alt="image" src="https://github.com/user-attachments/assets/d7a303e4-e7be-4bf4-9a63-5da3ec3d5b47" />
+
+
+### Movie Details Page
+
+<img width="1887" height="897" alt="image" src="https://github.com/user-attachments/assets/9bc79286-7add-44d9-b020-b4203e4c18a5" />
+
+
+---
+
 ## 🛠️ Tech Stack
 
 - **React**
@@ -114,18 +128,6 @@ Preview the production build:
 ```bash
 npm run preview
 ```
-
----
-
-## 📸 Screenshots
-
-### Home Page
-
-![Home Page](./docs/screenshot-1.png)
-
-### Movie Details Page
-
-![Movie Details](./docs/screenshot-2.png)
 
 ---
 
