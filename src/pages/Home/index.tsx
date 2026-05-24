@@ -47,7 +47,7 @@ const Home = () => {
 
     return (
         <div className="min-h-screen bg-slate-950 text-slate-100">
-            {loading && <Spinner loading={loading} />}
+            {loading && <Spinner/>}
 
             {error && (
                 <div className="p-4 text-center">
